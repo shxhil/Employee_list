@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Employee list</h1>
+    
+        {%for emp in data%}
+        <div>
+           name= {{emp.name}}
+           department={{emp.department}}
+           salary={{emp.salary}}
+           email={{emp.email}}
+           age={{emp.age}}
+           contact={{emp.contact}}
+
+        </div>
+
+        {%endfor%}
+    
+</body>
+</html>

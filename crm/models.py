@@ -11,4 +11,5 @@ class Employees(models.Model):
 
     def __str__(self):
         return self.name
-    #object string representation
+    #object string representation in terminal
+

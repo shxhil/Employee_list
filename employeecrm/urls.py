@@ -19,5 +19,6 @@ from crm import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('employee/add/',views.EmployeeCreateView.as_view(),name="emp-add")
+    path('employee/add/',views.EmployeeCreateView.as_view(),name="emp-add"),
+    path('employee/all/',views.EmployeeListView.as_view(),name="emp-list"),
 ]
