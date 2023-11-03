@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.views.generic import View
 from crm.forms import EmplyeeForm,EmployeeModelForm
 
@@ -25,3 +25,16 @@ class EmployeeListView(View):
     def get(self,request,*args,**kwargs):
         qs=Employees.objects.all()
         return render(request,"emp_list.html",{"data":qs})
+    
+
+class EmployeeDetailView(View):
+    def get(self,request,*args,**kwargs):
+        id=kwargs.get("pk")
+        qs=Employees.objects.get(id=id)
+        return render(request,"emp_details.html",{"data":qs})
+    
+class EmployeeDeleteView(View):
+    def get(self,request,*args,**kwargs):
+        id=kwargs.get("pk")
+        Employees.objects.get(id=id).delete()
+        return redirect("emp-list")
