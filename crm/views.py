@@ -16,7 +16,7 @@ class EmployeeCreateView(View):
             form.save()
             # Employees.objects.create(**form.cleaned_data)
             print("created")
-            return render(request,"emp_add.html",{"form":form})
+            return redirect("emp_add.html")
         else:
             return render(request,"emp_add.html",{"form":form})
               
@@ -26,6 +26,10 @@ class EmployeeListView(View):
         qs=Employees.objects.all()
         return render(request,"emp_list.html",{"data":qs})
     
+    def post(self,request,*args,**kwargs):
+        name=request.POST.get("box")
+        qs=Employees.objects.filter(name=name)
+        return render(request,"emp_list.html",{"data":qs})
 
 class EmployeeDetailView(View):
     def get(self,request,*args,**kwargs):
@@ -38,3 +42,22 @@ class EmployeeDeleteView(View):
         id=kwargs.get("pk")
         Employees.objects.get(id=id).delete()
         return redirect("emp-list")
+    
+class EmployeeUpdateView(View):
+    def get(self,request,*args,**kwargs):
+        id=kwargs.get("pk")
+        obj=Employees.objects.get(id=id)
+        form=EmployeeModelForm(instance=obj)
+        return render(request,"emp_edit.html",{"form":form})
+    
+    def post(self,request,*args,**kwargs):
+        id=kwargs.get("pk")
+        obj=Employees.objects.get(id=id)
+        form=EmployeeModelForm(request.POST, instance=obj)
+        if form.is_valid():
+            form.save()
+            # return redirect("emp-detils", pk=id)
+            return redirect("emp-list")
+
+        else:
+            return render(request,"emp_edit.html",{"form":form})
