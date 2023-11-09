@@ -16,12 +16,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from crm import views
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('employee/add/',views.EmployeeCreateView.as_view(),name="emp-add"),
+    #path('employee/add/',views.EmployeeCreateView.as_view(),name="emp-add"),
+    path('',views.EmployeeCreateView.as_view(),name="emp-add"),
     path('employee/all/',views.EmployeeListView.as_view(),name="emp-list"),
-    path('employee/<int:pk>',views.EmployeeDetailView.as_view(),name="emp-detils"),
+    path('employee/<int:pk>',views.EmployeeDetailView.as_view(),name="emp-details"),
     path('employee/<int:pk>/remove/',views.EmployeeDeleteView.as_view(),name="emp-delete"),
-    path('employee/<int:pk>/change/',views.EmployeeUpdateView.as_view(),name="emp-edit")
-]
+    path('employee/<int:pk>/change/',views.EmployeeUpdateView.as_view(),name="emp-edit"),
+    
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

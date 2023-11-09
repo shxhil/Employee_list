@@ -8,8 +8,10 @@ class Employees(models.Model):
     email=models.EmailField(unique=True)
     age=models.PositiveIntegerField()
     contact=models.CharField(max_length=200,null=True)
+    profile_pic=models.ImageField(upload_to="images",null=True)
 
-    def __str__(self):
-        return self.name
+    # def __str__(self):
+    #     return self.name
     #object string representation in terminal
+
 
