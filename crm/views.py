@@ -1,8 +1,9 @@
 from django.shortcuts import render,redirect
 from django.views.generic import View
-from crm.forms import EmployeeModelForm
+from crm.forms import EmployeeModelForm,RegistrationForm
 from django.contrib import messages
 from crm.models import Employees
+from django.contrib.auth.models import User
 # Create your views here.
 
 class EmployeeCreateView(View):
@@ -69,3 +70,23 @@ class EmployeeUpdateView(View):
         else:
             messages.error(request,"failed to update")
             return render(request,"emp_edit.html",{"form":form})
+        
+
+class SignupView(View):
+    def get(self,request,*args,**kwargs):
+        form=RegistrationForm()
+        return render(request,"registration.html",{"form":form})
+    
+    def post(self,request,*args,**kwargs):
+        form=RegistrationForm(request.POST)
+        if form.is_valid():
+            # form.save()
+            User.objects.create_user(**form.cleaned_data)
+            messages.success(request,"Account succesfully created")
+            print("saved")
+            return render(request,"registration.html",{"form":form})
+        else:
+            messages.error(request,"failed to creat account")
+            print("failed")
+            return render(request,"registration.html",{"form":form})
+
