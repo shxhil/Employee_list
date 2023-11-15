@@ -1,10 +1,12 @@
 from django.shortcuts import render,redirect
 from django.views.generic import View
-from crm.forms import EmployeeModelForm,RegistrationForm
+from crm.forms import EmployeeModelForm,RegistrationForm,LoginForm
 from django.contrib import messages
 from crm.models import Employees
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate,login,logout
 # Create your views here.
+
 
 class EmployeeCreateView(View):
     def get (self,request,*args,**kwargs):
@@ -90,3 +92,40 @@ class SignupView(View):
             print("failed")
             return render(request,"registration.html",{"form":form})
 
+class SigninView(View):
+    def get(self,request,*args,**kwargs):
+        form=LoginForm()
+        return render(request,"login.html",{"form":form})
+    
+    def post(self,request,*args,**kwargs):
+        form=LoginForm(request.POST)
+        if form.is_valid():
+            user_name=form.cleaned_data.get("username")
+            pwd=form.cleaned_data.get("password")
+            print(user_name,pwd)
+            user_obj=authenticate(request,username=user_name,password=pwd)
+            if user_obj:
+                print("valid credential")
+                login(request,user_obj)
+                messages.success(request,"valid credential")
+                return redirect("emp-list")
+        messages.error(request,"invalid credentail")
+        return render(request,"login.html",{"form":form})
+
+      
+            # else:
+            #     print("invalid credential")
+            #     messages.error(request,"invalid credentail")
+
+
+            # return render(request,"login.html",{"form":form})
+        # else:
+        #      messages.error(request,"invalid credentail")
+        #      return render(request,"login.html",{"form":form})
+
+class SignOutView(View):
+    def get(self,request,*args,**kwargs):
+        logout(request)
+        messages.error(request,"logout")
+        return redirect("signin")
+           
