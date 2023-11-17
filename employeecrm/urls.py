@@ -24,7 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('employee/add/',views.EmployeeCreateView.as_view(),name="emp-add"),
     # path('',views.EmployeeCreateView.as_view(),name="emp-add"),
-    path('employee/all/',views.EmployeeListView.as_view(),name="emp-list"),
+    path('employee/all',views.EmployeeListView.as_view(),name="emp-list"),
     path('employee/<int:pk>',views.EmployeeDetailView.as_view(),name="emp-details"),
     path('employee/<int:pk>/remove/',views.EmployeeDeleteView.as_view(),name="emp-delete"),
     path('employee/<int:pk>/change/',views.EmployeeUpdateView.as_view(),name="emp-edit"),
