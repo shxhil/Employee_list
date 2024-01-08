@@ -62,7 +62,7 @@ class EmployeeListView(View):
         
     def post(self,request,*args,**kwargs):
         name=request.POST.get("box")
-        qs=Employees.objects.filter(name_icontains=name)
+        qs=Employees.objects.filter(name__icontains=name)
         return render(request,"emp_list.html",{"data":qs})
 
 @method_decorator(signin_required,name="dispatch")

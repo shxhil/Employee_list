@@ -11,8 +11,9 @@ class Employees(models.Model):
     profile_pic=models.ImageField(upload_to="images",null=True,blank=True)
     dob=models.DateField(null=True,blank=True)
 
-    # def __str__(self):
-    #     return self.name
+    def __str__(self):
+        return self.name
+
     #object string representation in terminal
 
 
