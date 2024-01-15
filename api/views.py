@@ -10,6 +10,10 @@ from crm.models import Employees
 
 from api.serializers import EmployeeSerializer
 
+from rest_framework import authentication,permissions
+
+from rest_framework.decorators import action
+
 
 class EmployeeListCreatView(APIView):
     def get(self,request,*args,**kwargs):
@@ -60,12 +64,21 @@ class EmplyeeMixinView(APIView):
         Employees.objects.get(id=id).delete()
         return Response(data={"message":"delete employee"})
              
-    
+#_________________viewsetview____________
 class EmployeeViewsetView(ViewSet):
    
+   authentication_classes=[authentication.BasicAuthentication]
+   permission_classes=[permissions.IsAuthenticated]
+
    def list(self,request,*args,**kwargs):
        qs=Employees.objects.all()
+       if "department" in request.query_params:
+           value=request.query_params.get("department")
+           qs=qs.filter(department=value)
+           print(qs)
        serializer=EmployeeSerializer(qs,many=True)
+       
+
        return Response(data=serializer.data)
    
    def create(self,request,*args,**kwargs):
@@ -79,7 +92,7 @@ class EmployeeViewsetView(ViewSet):
    #specific
    def retrieve(self,request,*args,**kwargs):
        id=kwargs.get("pk")
-       qs=Employees.objects.all()
+       qs=Employees.objects.get(id=id)
        serialize=EmployeeSerializer(qs)
        return Response(data=serialize.data)
 
@@ -97,4 +110,11 @@ class EmployeeViewsetView(ViewSet):
        id=kwargs.get("pk")
        Employees.objects.get(id=id).delete()
        return Response(data={"message":"delete employee"})
-             
+    
+    #url:localhost:8000/api/v2/employees/all_departments/
+    #method:get
+   @action(methods=["get"], detail=False)#url ll id illa so detail=false 
+   def all_departments(self,request,*args,**kwargs):
+    #unique,no repetition
+       qs=Employees.objects.all().values_list("department",flat=True).distinct()
+       return Response(data=qs)
