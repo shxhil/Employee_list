@@ -50,14 +50,13 @@ class EmployeeCreateView(View):
 @method_decorator(signin_required,name="dispatch")
 class EmployeeListView(View):
     def get(self,request,*args,**kwargs):
-        
-            qs=Employees.objects.all()
-            departments=Employees.objects.all().values_list("department",flat=True).distinct()
-            print(departments)
-            if "department" in request.GET:
-                dept=request.GET.get("department")
-                qs=qs.filter(department_iexact=dept)
-            return render(request,"emp_list.html",{"data":qs,"departments":departments})
+        qs=Employees.objects.all()
+        departments=Employees.objects.all().values_list("department",flat=True).distinct()#unique
+        print(departments)
+        if "department" in request.GET:
+            dept=request.GET.get("department")
+            qs=qs.filter(department__iexact=dept)
+        return render(request,"emp_list.html",{"data":qs,"departments":departments})
        
         
     def post(self,request,*args,**kwargs):
@@ -122,25 +121,27 @@ class SignupView(View):
             print("failed")
             return render(request,"registration.html",{"form":form})
 
-class SigninView(View):
-    def get(self,request,*args,**kwargs):
-        form=LoginForm()
-        return render(request,"login.html",{"form":form})
+# class SigninView(View):
+#     def get(self,request,*args,**kwargs):
+#         form=LoginForm()
+#         return render(request,"login.html",{"form":form})
     
-    def post(self,request,*args,**kwargs):
-        form=LoginForm(request.POST)
-        if form.is_valid():
-            user_name=form.cleaned_data.get("username")
-            pwd=form.cleaned_data.get("password")
-            print(user_name,pwd)
-            user_obj=authenticate(request,username=user_name,password=pwd)
-            if user_obj:
-                print("valid credential")
-                login(request,user_obj)
-                messages.success(request,"valid credential")
-                return redirect("emp-list")
-        messages.error(request,"invalid credentail")
-        return render(request,"login.html",{"form":form})
+#     def post(self,request,*args,**kwargs):
+#         form=LoginForm(request.POST)
+#         if form.is_valid():
+#             user_name=form.cleaned_data.get("username")
+#             pwd=form.cleaned_data.get("password")
+#             print(user_name,pwd)
+#             user_obj=authenticate(request,username=user_name,password=pwd)
+#             if user_obj:
+#                 print("valid credential")
+#                 login(request,user_obj)
+#                 messages.success(request,"valid credential")
+#                 return redirect("emp-list")
+#         else:
+#             messages.error(request,"invalid credentail")
+#             return render(request,"login.html",{"form":form})
+
 
       
             # else:
@@ -153,6 +154,26 @@ class SigninView(View):
         #      messages.error(request,"invalid credentail")
         #      return render(request,"login.html",{"form":form})
 
+class SigninView(View):
+    def get(self, request, *args, **kwargs):
+        form = LoginForm()
+        return render(request, "login.html", {"form": form})
+
+    def post(self, request, *args, **kwargs):
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            user_name = form.cleaned_data.get("username")
+            pwd = form.cleaned_data.get("password")
+            user_obj = authenticate(request, username=user_name, password=pwd)
+            print("user_obj:", user_obj)
+            if user_obj:
+                login(request, user_obj)
+                messages.success(request, "Valid credentials")
+                return redirect("emp-list")
+            else:
+                messages.error(request, "Invalid credentials")
+                
+        return render(request, "login.html", {"form": form})
 
 @method_decorator(signin_required,name="dispatch")
 class SignOutView(View):

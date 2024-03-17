@@ -113,7 +113,7 @@ class EmployeeViewsetView(ViewSet):
     
     #url:localhost:8000/api/v2/employees/all_departments/
     #method:get
-   @action(methods=["get"], detail=False)#url ll id illa so detail=false 
+   @action(methods=["get"], detail=False) #url ll id illa so detail=false 
    def all_departments(self,request,*args,**kwargs):
     #unique,no repetition
        qs=Employees.objects.all().values_list("department",flat=True).distinct()
